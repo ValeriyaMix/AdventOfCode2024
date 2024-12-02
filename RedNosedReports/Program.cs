@@ -19,48 +19,50 @@ namespace MyApp
             foreach (string line in lines)
             {
                 // Split the line into rows
-                int[] reportLevels = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                List<int> reportLevels = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(int.Parse)
-                    .ToArray();
+                    .ToList();
                 string[] reportLevelsString = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 
-                string[] orderAscend = reportLevelsString.OrderBy(x => x).ToArray();
-                string[] orderDescend = reportLevelsString.OrderByDescending(x => x).ToArray();
+                int[] orderAscend = reportLevels.OrderBy(x => x).ToArray();
+                int[] orderDescend = reportLevels.OrderByDescending(x => x).ToArray();
 
                 string stringAscend = string.Join(" ", orderAscend);
                 string stringDescend = string.Join(" ", orderDescend);
 
-                if (line == stringAscend)
+                if (line != stringAscend)
                 {
-                    for (int i = 0; i < reportLevels.Length - 1; i++)
+                    if (line != stringDescend)
                     {
-                        int differenceNext = Math.Abs(reportLevels[i] - reportLevels[i + 1]);
-                        if (!(differenceNext >= 1 && differenceNext <= 3))
-                        {
-                            unsafeReports++;
-                            break;
-                        }
+                        initialLength--;
                     }
-                }
-                else if (line == stringDescend)
-                {
-                    for (int i = 0; i < reportLevels.Length - 1; i++)
+                    else
                     {
-                        int differenceNext = reportLevels[i] - reportLevels[i + 1];
-                        if (!(differenceNext >= 1 && differenceNext <= 3))
+                        for (int i = 0; i < reportLevels.Count - 1; i++)
                         {
-                            unsafeReports++;
-                            break;
+                            int differenceNext = Math.Abs(reportLevels[i] - reportLevels[i + 1]);
+                            if (!(differenceNext >= 1 && differenceNext <= 3))
+                            {
+                                initialLength--;
+                                break;
+                            }
                         }
                     }
                 }
                 else
                 {
-                    //unsafeReports++;
+                    for (int i = 0; i < reportLevels.Count - 1; i++)
+                    {
+                        int differenceNext = Math.Abs(reportLevels[i] - reportLevels[i + 1]);
+                        if (!(differenceNext >= 1 && differenceNext <= 3))
+                        {
+                            initialLength--;
+                            break;
+                        }
+                    }
                 }
-
             }
-            Console.WriteLine(initialLength - unsafeReports);
+            Console.WriteLine(initialLength);
         }
 
         public static string[] readFromTheFile(string folderName)
