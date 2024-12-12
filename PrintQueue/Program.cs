@@ -40,16 +40,18 @@ namespace MyApp
                 }
             }
             listOfLines.RemoveRange(0, count + 1);
+            
             foreach (string item in listOfLines)
             {
                 List<int> itemList = item
                     .Split(',')
                     .Select(int.Parse)
                     .ToList();
-                for (int i = 0; i < itemList.Count; i++)
+                for (int i = 0; i < itemList.Count - 1; i++)
                 { 
                     if (!leftColumn.Contains(itemList[i]))
                     {
+                        allNumbersFound.Add(false);
                         break;
                     }
                     else
@@ -82,6 +84,9 @@ namespace MyApp
                             break;
                         }
                     }
+                    //Clear here some lists
+                    listNumbersThatGoAfter.Clear();
+                    indexes.Clear();
                 }
 
                 // If all numbers are found in listNumbersThatGoAfter, record the index of the item
@@ -89,21 +94,27 @@ namespace MyApp
                 {
                     indexesOfRightOrderLines.Add(listOfLines.IndexOf(item));
                 }
-                allNumbersFound.Clear();
-                listNumbersThatGoAfter.Clear();
-                indexes.Clear();  
+                allNumbersFound.Clear();  
                 itemList.Clear();
             }
-
-            foreach (int ind in  indexesOfRightOrderLines)
+            int sum = 0;
+            int middleNumber;
+            foreach (int ind in indexesOfRightOrderLines)
             {
-                Console.WriteLine(ind);
+                List<int> itemList = listOfLines[ind]
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList();
+                
+                middleNumber = itemList[itemList.Count / 2];
+                sum += middleNumber;
             }
+            Console.WriteLine(sum);
         }
 
         public static string[] readFromTheFile(string folderName)
         {
-            return System.IO.File.ReadAllLines($@"C:\Users\valer\source\repos\AdventOfCode2024\{folderName}\inputCheck.txt");
+            return System.IO.File.ReadAllLines($@"C:\Users\valer\source\repos\AdventOfCode2024\{folderName}\input.txt");
 
         }
 
